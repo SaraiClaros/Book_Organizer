@@ -42,17 +42,30 @@ class DevolucionesController extends Controller
 
         return redirect()->route('devoluciones.index')->with('success', 'Devolución registrada correctamente.');
     }
+ 
+     public function consult(Request $request)
+    {
+         $devolucion = DevolucionesModel::where('prestamos_id', $request->prestamos_id)
+            ->first();
 
+           if (!$devolucion) {
+        return response()->json(data: ['error' => 'Devolucion no encontrada']);
+    }
+
+    return response()->json([
+        'fecha_devolucion_real' => $devolucion->fecha_devolucion_real,
+        'observaciones' => $devolucion->observaciones,
+    ]);
+}
    
     public function update(Request $request, $id)
     {
+        $devolucion = DevolucionesModel::find($id);
         $validated = $request->validate([
             'prestamos_id' => 'required|integer|exists:prestamos,prestamos_id',
             'fecha_devolucion_real' => 'required|date',
             'observaciones' => 'nullable|string',
         ]);
-
-        $devolucion = DevolucionesModel::findOrFail($id);
         $devolucion->update($validated);
 
         return redirect()->route('devoluciones.index')->with('success', 'Devolución actualizada correctamente.');
@@ -61,3 +74,4 @@ class DevolucionesController extends Controller
     
   
 }
+

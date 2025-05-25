@@ -14,7 +14,6 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -37,6 +36,7 @@ Route::resource('existencias', ExistenciasController::class);
 Route::resource('usuario', UsuariosController::class);
 Route::resource('prestamos', PrestamosController::class);
 Route::get('/libro/consultar-ajax', [LibroController::class, 'consultarAjax'])->name('libro.consultarAjax');
+
 
 
 require __DIR__.'/auth.php';

@@ -88,6 +88,18 @@ class LibroController extends Controller
 
                 return redirect()->route('libro.index')->with('success', '✏️ Libro modificado correctamente.');
 
+            case 'consultar':
+                $libro = LibrosModel::where('titulo', $request->titulo)
+            ->where('autor', $request->autor)
+            ->first();
+
+            if (!$libro) {
+            return redirect()->route('libro.create')->withErrors(['Libro no encontrado']);
+        }   
+
+             return view('libro.create', ['libros' => $libro]);
+            
+
             case 'eliminar':
                 $libros_id = $request->input('libros_id');
                 $libros = LibrosModel::find($libros_id);

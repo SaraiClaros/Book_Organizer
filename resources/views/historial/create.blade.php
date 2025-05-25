@@ -1,4 +1,4 @@
-@extends('barra')
+@extends('layouts.navigation')
 
 @section('title', 'Historial - Biblioteca')
 

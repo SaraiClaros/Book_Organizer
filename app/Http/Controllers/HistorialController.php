@@ -35,6 +35,22 @@ class HistorialController extends Controller
         
         return redirect()->route('historial.index')->with('success', 'Historial registrado correctamente.');
     }
+    public function consult(Request $request)
+{
+    $historial = HistorialModel::find($request->historial_id);
+
+    if (!$historial) {
+        return response()->json(['error' => 'Historial no encontrado']);
+    }
+
+    return response()->json([
+        'usuarios_id' => $historial->usuarios_id,
+        'accion' => $historial->accion,
+        'detalle' => $historial->detalle,
+        'fecha' => $historial->fecha,
+    ]);
+}
+
 
     public function update(Request $request, $historial_id)
     {

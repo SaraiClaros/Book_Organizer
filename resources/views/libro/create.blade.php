@@ -39,17 +39,17 @@
 
         <div class="form-group">
         <label for="editorial">Editorial:</label>
-        <input type="text" class="borde-negro" name="editorial" id="editorial" value="{{ old('editorial', $libros->editorial ?? '') }}" required>
+        <input type="text" class="borde-negro" name="editorial" id="editorial" value="{{ old('editorial', $libros->editorial ?? '') }}" >
         </div>
 
         <div class="form-group">
         <label for="anio_publicacion">Año de Publicación:</label>
-        <input type="number" class="borde-negro" name="anio_publicacion" id="anio_publicacion" value="{{ old('anio_publicacion', $libros->anio_publicacion ?? '') }}" required>
+        <input type="number" class="borde-negro" name="anio_publicacion" id="anio_publicacion" value="{{ old('anio_publicacion', $libros->anio_publicacion ?? '') }}" >
         </div>
 
         <div class="form-group">
         <label for="genero">Género:</label>
-        <input type="text" class="borde-negro" name="genero" id="genero" value="{{ old('genero', $libros->genero ?? '') }}" required>
+        <input type="text" class="borde-negro" name="genero" id="genero" value="{{ old('genero', $libros->genero ?? '') }}" >
         </div>
 
         <div class="form-group">
@@ -59,7 +59,7 @@
 
         <div class="form-group">
         <label for="cantidad_disponible">Cantidad Disponible:</label>
-        <input type="number" class="borde-negro" name="cantidad_disponible" id="cantidad_disponible" value="{{ old('cantidad_disponible', $libros->cantidad_disponible ?? '') }}" required>
+        <input type="number" class="borde-negro" name="cantidad_disponible" id="cantidad_disponible" value="{{ old('cantidad_disponible', $libros->cantidad_disponible ?? '') }}" >
         </div>
 
         <div class="form-group">

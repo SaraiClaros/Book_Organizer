@@ -36,19 +36,36 @@ class GeneroController extends Controller
         return redirect()->route('genero.index')->with('success', 'Género registrado correctamente.');
     }
 
+    public function consult(Request $request)
+    {
+         $genero = GeneroModel::where('genero', $request->genero)
+            ->first();
+
+           if (!$genero) {
+        return response()->json(['error' => 'Genero no encontrado']);
+    }
+
+    return response()->json([
+        'id' => $genero-> genero_id,
+        'descripcion' => $genero->descripcion
+    ]);
+}
     
   
 
    
-    public function update(Request $request, $id)
+    public function update(Request $request, $genero_id)
     {
-        
+        $genero = GeneroModel::find($genero_id);
+        if (!$genero) {
+        return redirect()->back()->withErrors(['error' => 'Género no encontrado']);
+    }
         $validated = $request->validate([
             'genero' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
         ]);
-
-        $genero = GeneroModel::findOrFail($id);
+        
+        
         $genero->update($validated);
 
         return redirect()->route('genero.index')->with('success', 'Género actualizado correctamente.');
@@ -63,3 +80,4 @@ class GeneroController extends Controller
         return redirect()->route('genero.index')->with('success', 'Género eliminado correctamente.');
     }
 }
+

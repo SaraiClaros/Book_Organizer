@@ -37,18 +37,36 @@ class UsuariosController extends Controller
         return redirect()->route('usuario.index')->with('success', 'Usuario creado correctamente.');
     }
 
+    public function consult(Request $request)
+{
+    $usuario = UsuariosModel::where('nombre', $request->nombre)->first();
+
+    if (!$usuario) {
+        return response()->json(['error' => 'Usuario no encontrado']);
+    }
+
+    return response()->json([
+        'id' => $usuario->usuarios_id,
+        'email' => $usuario->email,
+        'rol' => $usuario->rol,
+    ]);
+}
 
    
-    public function update(Request $request, $id)
+    public function update(Request $request, $usuario_id)
     {
+        $usuario = UsuariosModel::find($usuario_id);
+        if (!$usuario) {
+        return redirect()->back()->withErrors(['error' => 'usuario no encontrado']);
+    }
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
-            'email' => 'required|email|unique:usuarios,email,' . $id,
+            'email' => 'required|email|max:80',
             'password' => 'nullable|string|min:8',
             'rol' => 'required|in:admin,lector',
         ]);
 
-        $usuario = UsuariosModel::findOrFail($id);
+        $usuario = UsuariosModel::findOrFail($usuario_id);
         if ($request->filled('password')) {
             $validated['password'] = bcrypt($request->password);
         } else {
@@ -60,7 +78,6 @@ class UsuariosController extends Controller
         return redirect()->route('usuario.index')->with('success', 'Usuario actualizado correctamente.');
     }
 
-  
     public function destroy($usuarios_id)
     {
         $usuario = UsuariosModel::findOrFail($usuarios_id);

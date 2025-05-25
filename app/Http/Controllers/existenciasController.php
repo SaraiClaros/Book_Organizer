@@ -38,7 +38,21 @@ class ExistenciasController extends Controller
     }
 
   
-    
+    public function consult(Request $request)
+{
+    $existencia = ExistenciasModel::where('codigo_identificacion', $request->codigo_identificacion)->first();
+
+    if (!$existencia) {
+        return response()->json(['error' => 'Existencia no encontrada']);
+    }
+
+    return response()->json([
+        'id_existencia' => $existencia->id_existencia,
+        'libros_id' => $existencia->libros_id,
+        'ubicacion_general' => $existencia->ubicacion_general,
+    ]);
+}
+
 
     public function update(Request $request, $id)
     {
@@ -46,7 +60,7 @@ class ExistenciasController extends Controller
         $validated = $request->validate([
             'libros_id' => 'required|integer',
             'ubicacion_general' => 'required|string',
-            'codigo_identificacion' => 'required|string|unique:existencias,codigo_identificacion,' . $id,
+            'codigo_identificacion' => 'required|string',
         ]);
 
         $existencia = ExistenciasModel::findOrFail($id);

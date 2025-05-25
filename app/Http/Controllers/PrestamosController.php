@@ -41,7 +41,24 @@ class PrestamosController extends Controller
     }
 
 
-    
+    public function consult(Request $request)
+{
+    $prestamo = PrestamosModel::where('prestamos_id', $request->prestamos_id)->first();
+
+    if (!$prestamo) {
+        return response()->json(['error' => 'Préstamo no encontrado.']);
+    }
+
+    return response()->json([
+        'id' => $prestamo->prestamos_id,
+        'usuarios_id' => $prestamo->usuarios_id,
+        'libros_id' => $prestamo->libros_id,
+        'fecha_prestamo' => $prestamo->fecha_prestamo,
+        'fecha_devolucion' => $prestamo->fecha_devolucion,
+        'estado' => $prestamo->estado,
+    ]);
+}
+
     public function update(Request $request, $id)
     {
         // Validar los datos
@@ -50,7 +67,7 @@ class PrestamosController extends Controller
             'libros_id' => 'required|exists:libros,libros_id',
             'fecha_prestamo' => 'required|date',
             'fecha_devolucion' => 'required|date',
-            'estado' => 'required|in:activo,devuelto',
+            'estado' => 'required|in:En curso,Devuelto,Atrasado',
         ]);
 
         $prestamo = PrestamosModel::findOrFail($id);

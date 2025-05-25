@@ -28,7 +28,7 @@
         <input type="text" name="ubicacion_general" required><br><br>
 
         <label for="codigo_identificacion">Código de Identificación:</label>
-        <input type="text" name="codigo_identificacion" required><br><br>
+        <input type="text" name="codigo_identificacion"><br><br>
   
         <div class="botones">
         <button type="submit">Guardar Existencias</button>
