@@ -36,7 +36,13 @@ Route::resource('existencias', ExistenciasController::class);
 Route::resource('usuario', UsuariosController::class);
 Route::resource('prestamos', PrestamosController::class);
 Route::get('/libro/consultar-ajax', [LibroController::class, 'consultarAjax'])->name('libro.consultarAjax');
+Route::get('/prestamos/consultar-ajax', [PrestamosController::class, 'consult'])->name('prestamos.consultarAjax');
 
 
+Route::get('/prestamos/create', [PrestamosController::class, 'create'])->name('prestamos.create');
+Route::post('/prestamos/store', [PrestamosController::class, 'store'])->name('prestamos.store');
+Route::post('/prestamos/consultar', [PrestamosController::class, 'consult'])->name('prestamos.consultar');
+Route::post('/prestamos/update/{id}', [PrestamosController::class, 'update'])->name('prestamos.update');
+Route::post('/prestamos/delete/{id}', [PrestamosController::class, 'destroy'])->name('prestamos.destroy');
 
 require __DIR__.'/auth.php';

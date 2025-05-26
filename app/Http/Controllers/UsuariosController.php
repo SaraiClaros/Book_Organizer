@@ -7,82 +7,78 @@ use Illuminate\Http\Request;
 
 class UsuariosController extends Controller
 {
-    
     public function index()
     {
         $usuarios = UsuariosModel::all();
         return view('usuario.index', compact('usuarios'));
     }
 
-   
     public function create()
     {
-        return view('usuario.create');
+        return view('usuario.create')->with(['usuario' => null]);
     }
 
-   
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|email|unique:usuarios,email',
-            'password' => 'required|string|min:8',
-            'rol' => 'required|in:admin,lector',
-        ]);
+        $accion = $request->input('accion');
 
-        $validated['password'] = bcrypt($validated['password']); // encripta la contraseña
+        switch ($accion) {
+            case 'guardar':
+                $validated = $request->validate([
+                    'nombre' => 'required|string|max:255',
+                    'email' => 'required|email|unique:usuarios,email',
+                    'password' => 'required|string|min:8',
+                    'rol' => 'required|in:admin,lector',
+                ]);
 
-        UsuariosModel::create($validated);
+                $validated['password'] = bcrypt($validated['password']);
+                UsuariosModel::create($validated);
 
-        return redirect()->route('usuario.index')->with('success', 'Usuario creado correctamente.');
-    }
+                return back()->with('success', '✅ Usuario guardado correctamente.');
 
-    public function consult(Request $request)
-{
-    $usuario = UsuariosModel::where('nombre', $request->nombre)->first();
+            case 'consultar':
+                $usuario = UsuariosModel::where('nombre', $request->nombre)->first();
+                if (!$usuario) {
+                    return back()->with('error', '⚠️ Usuario no encontrado.')->withInput();
+                }
 
-    if (!$usuario) {
-        return response()->json(['error' => 'Usuario no encontrado']);
-    }
+                return view('usuario.create')->with([
+                    'usuario' => $usuario,
+                    'success' => '✅ Usuario encontrado.'
+                ]);
 
-    return response()->json([
-        'id' => $usuario->usuarios_id,
-        'email' => $usuario->email,
-        'rol' => $usuario->rol,
-    ]);
-}
+            case 'modificar':
+                $usuario = UsuariosModel::where('nombre', $request->nombre)->first();
+                if (!$usuario) {
+                    return back()->with('error', '⚠️ Usuario no encontrado para modificar.')->withInput();
+                }
 
-   
-    public function update(Request $request, $usuario_id)
-    {
-        $usuario = UsuariosModel::find($usuario_id);
-        if (!$usuario) {
-        return redirect()->back()->withErrors(['error' => 'usuario no encontrado']);
-    }
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|email|max:80',
-            'password' => 'nullable|string|min:8',
-            'rol' => 'required|in:admin,lector',
-        ]);
+                $validated = $request->validate([
+                    'email' => 'required|email|max:80',
+                    'password' => 'nullable|string|min:8',
+                    'rol' => 'required|in:admin,lector',
+                ]);
 
-        $usuario = UsuariosModel::findOrFail($usuario_id);
-        if ($request->filled('password')) {
-            $validated['password'] = bcrypt($request->password);
-        } else {
-            unset($validated['password']);
+                if ($request->filled('password')) {
+                    $validated['password'] = bcrypt($request->password);
+                } else {
+                    unset($validated['password']);
+                }
+
+                $usuario->update($validated);
+                return back()->with('success', '✏️ Usuario modificado correctamente.');
+
+            case 'eliminar':
+                $usuario = UsuariosModel::where('nombre', $request->nombre)->first();
+                if (!$usuario) {
+                    return back()->with('error', '⚠️ Usuario no encontrado para eliminar.')->withInput();
+                }
+
+                $usuario->delete();
+                return back()->with('success', '🗑️ Usuario eliminado correctamente.');
+
+            default:
+                return back()->with('error', '⚠️ Acción no válida.');
         }
-
-        $usuario->update($validated);
-
-        return redirect()->route('usuario.index')->with('success', 'Usuario actualizado correctamente.');
-    }
-
-    public function destroy($usuarios_id)
-    {
-        $usuario = UsuariosModel::findOrFail($usuarios_id);
-        $usuario->delete();
-
-        return redirect()->route('usuario.index')->with('success', 'Usuario eliminado correctamente.');
     }
 }

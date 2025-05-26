@@ -2,32 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\PrestamosModel;
 use App\Models\UsuariosModel;
 use App\Models\LibrosModel;
-use Illuminate\Http\Request;
 
 class PrestamosController extends Controller
 {
-    
     public function index()
     {
-        $prestamos = PrestamosModel::with(['usuarios', 'libros'])->get(); 
+        $prestamos = PrestamosModel::with(['usuarios', 'libros'])->get();
         return view('prestamos.index', compact('prestamos'));
     }
 
-    
     public function create()
     {
-        $usuarios = UsuariosModel::all();  
-        $libros = LibrosModel::all();  
+        $usuarios = UsuariosModel::all();
+        $libros = LibrosModel::all();
         return view('prestamos.create', compact('usuarios', 'libros'));
     }
 
-    
     public function store(Request $request)
     {
+        $accion = $request->input('accion');
+
+        if ($accion === 'consultar') {
+            return $this->consult($request);
+        } elseif ($accion === 'modificar') {
+            return $this->update($request, $request->input('prestamos_id'));
+        } elseif ($accion === 'eliminar') {
+            return $this->destroy($request->input('prestamos_id'));
+        }
+
+        // Validación para guardar
         $request->validate([
+            'prestamos_id' => 'required|integer|unique:prestamos,prestamos_id',
             'usuarios_id' => 'required|exists:usuarios,usuarios_id',
             'libros_id' => 'required|exists:libros,libros_id',
             'fecha_prestamo' => 'required|date',
@@ -40,29 +49,30 @@ class PrestamosController extends Controller
         return redirect()->route('prestamos.index')->with('success', 'Préstamo registrado correctamente.');
     }
 
-
-    public function consult(Request $request)
+   public function consultar(Request $request)
 {
-    $prestamo = PrestamosModel::where('prestamos_id', $request->prestamos_id)->first();
+    $prestamo = Prestamo::where('prestamos_id', $request->prestamos_id)
+        ->where('usuarios_id', $request->usuarios_id)
+        ->where('libros_id', $request->libros_id)
+        ->first();
 
-    if (!$prestamo) {
-        return response()->json(['error' => 'Préstamo no encontrado.']);
+    if(!$prestamo){
+        return response()->json(['error' => 'Préstamo no encontrado'], 404);
     }
 
     return response()->json([
-        'id' => $prestamo->prestamos_id,
-        'usuarios_id' => $prestamo->usuarios_id,
-        'libros_id' => $prestamo->libros_id,
-        'fecha_prestamo' => $prestamo->fecha_prestamo,
-        'fecha_devolucion' => $prestamo->fecha_devolucion,
+        'fecha_prestamo' => $prestamo->fecha_prestamo->format('Y-m-d'),
+        'fecha_devolucion' => $prestamo->fecha_devolucion->format('Y-m-d'),
         'estado' => $prestamo->estado,
     ]);
 }
 
+
+
+
     public function update(Request $request, $id)
     {
-        // Validar los datos
-        $validated = $request->validate([
+        $request->validate([
             'usuarios_id' => 'required|exists:usuarios,usuarios_id',
             'libros_id' => 'required|exists:libros,libros_id',
             'fecha_prestamo' => 'required|date',
@@ -71,15 +81,14 @@ class PrestamosController extends Controller
         ]);
 
         $prestamo = PrestamosModel::findOrFail($id);
-        $prestamo->update($validated);
+        $prestamo->update($request->all());
 
-        return redirect()->route('prestamos.index')->with('success', 'Préstamo actualizado correctamente.');
+        return redirect()->route('prestamos.index')->with('success', 'Préstamo modificado correctamente.');
     }
 
-
-    public function destroy($prestamos_id)
+    public function destroy($id)
     {
-        $prestamo = PrestamosModel::findOrFail($prestamos_id);
+        $prestamo = PrestamosModel::findOrFail($id);
         $prestamo->delete();
 
         return redirect()->route('prestamos.index')->with('success', 'Préstamo eliminado correctamente.');

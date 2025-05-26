@@ -1,56 +1,51 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Listado de Préstamos</title>
-    <link rel="stylesheet" href="{{ asset('css/stilos.css') }}">
-</head>
-<body>
-    <h1>📚 Listado de Préstamos</h1>
+@extends('layouts.navigation')
 
-    <a href="{{ route('prestamos.create') }}">➕ Registrar Nuevo Préstamo</a>
-    <br><br>
+@section('title', 'Listado de Préstamos')
 
-    @if(session('success'))
-        <p style="color: green;">{{ session('success') }}</p>
-    @endif
+@section('content')
+<h1>Listado de Préstamos</h1>
 
-    <table>
-        <thead>
+@if(session('success'))
+    <div style="color: green;">{{ session('success') }}</div>
+@endif
+
+<table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>ID Préstamo</th>
+            <th>Usuario</th>
+            <th>Libro</th>
+            <th>Fecha Préstamo</th>
+            <th>Fecha Devolución</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($prestamos as $prestamo)
             <tr>
-                <th>ID</th>
-                <th>ID Usuario</th>
-                <th>ID Libro</th>
-                <th>Fecha de Préstamo</th>
-                <th>Fecha Límite</th>
-                <th>Estado</th>
-                <th>Accion</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($prestamos as $prestamo)
-                <tr>
-                    <td>{{ $prestamo->id }}</td>
-                    <td>{{ $prestamo->usuario_id }}</td>
-                    <td>{{ $prestamo->libro_id }}</td>
-                    <td>{{ $prestamo->fecha_prestamo }}</td>
-                    <td>{{ $prestamo->fecha_limite }}</td>
-                    <td>{{ $prestamo->estado }}</td>
-
-                   <td>
-
-                    <form action="{{ route('prestamos.destroy', $prestamo->prestamos_id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este prestamo?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit">🗑️ Eliminar</button>
+                <td>{{ $prestamo->prestamos_id }}</td>
+                <td>{{ $prestamo->usuarios->nombre ?? 'Sin usuario' }}</td>
+                <td>{{ $prestamo->libros->titulo ?? 'Sin libro' }}</td>
+                <td>{{ \Carbon\Carbon::parse($prestamo->fecha_prestamo)->format('Y-m-d') }}</td>
+                <td>{{ \Carbon\Carbon::parse($prestamo->fecha_devolucion)->format('Y-m-d') }}</td>
+                <td>{{ $prestamo->estado }}</td>
+                <td>
+                    <form action="{{ route('prestamos.destroy', $prestamo->prestamos_id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('¿Seguro que quieres eliminar este préstamo?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" style="background:none; border:none; color:red; cursor:pointer;">🗑️ Eliminar</button>
                     </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="7" style="text-align:center;">No hay préstamos registrados.</td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
 
-    <br>
-    <a href="{{ url('/') }}">🔙 Volver al inicio</a>
-</body>
-</html>
+<br>
+<a href="{{ route('prestamos.create') }}">➕ Registrar Nuevo Préstamo</a>
+@endsection
