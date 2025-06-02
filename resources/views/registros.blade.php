@@ -15,12 +15,15 @@
                 <a href="{{ route('libro.index') }}">📘 Libros</a>
                 <a href="{{ route('usuario.index') }}">👤 Usuarios</a>
                 <a href="{{ route('prestamos.index') }}">📤 Préstamos</a>
+                <a href="{{ route('formulario.pdf') }}">📄 Subir Libro</a>
             </li>
             <li class="row">
                 <a href="{{ route('devoluciones.index') }}">📥 Devoluciones</a>
                 <a href="{{ route('historial.index') }}">📄 Historial</a>
                 <a href="{{ route('genero.index') }}">🏷️ Géneros</a>
                 <a href="{{ route('existencias.index') }}">📦 Existencias</a>
+               
+
             </li>
     
         </div>

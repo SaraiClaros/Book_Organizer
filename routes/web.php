@@ -9,6 +9,7 @@ use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\ExistenciasController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\PrestamosController;
+use App\Http\Controllers\PdfController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -44,5 +45,18 @@ Route::post('/prestamos/store', [PrestamosController::class, 'store'])->name('pr
 Route::post('/prestamos/consultar', [PrestamosController::class, 'consult'])->name('prestamos.consultar');
 Route::post('/prestamos/update/{id}', [PrestamosController::class, 'update'])->name('prestamos.update');
 Route::post('/prestamos/delete/{id}', [PrestamosController::class, 'destroy'])->name('prestamos.destroy');
+
+
+// PDF – Subir, Ver, Descargar y Categorías
+
+Route::get('/categorias', [PdfController::class, 'vistaCategorias'])->name('categorias');
+Route::get('/categoria/{id}', [PdfController::class, 'mostrarPorCategoria'])->name('categoria.pdfs');
+
+Route::get('/subir', [PdfController::class, 'subirFormulario'])->name('formulario.pdf');
+Route::post('/subir', [PdfController::class, 'subir'])->name('subir.pdf');
+
+Route::get('/ver/{id}', [PdfController::class, 'ver'])->name('ver.pdf');
+Route::get('/descargar/{id}', [PdfController::class, 'descargar'])->name('descargar.pdf');
+
 
 require __DIR__.'/auth.php';

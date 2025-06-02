@@ -55,23 +55,22 @@
         <option value="Atrasado" {{ (isset($prestamo) && $prestamo->estado == 'Atrasado') ? 'selected' : '' }}>Atrasado</option>
     </select>
 
-    <div class="butones">
-        <button type="submit" name="accion" value="guardar">📘 Guardar</button>
-        <button type="submit" name="accion" value="consultar">🔍 Consultar Libro</button>
-        <button type="submit" name="accion" value="modificar">✏️ Modificar Libro</button>
-        <button type="submit" name="accion" value="eliminar">🗑️ Eliminar Libro</button>
+   <div class="butones">
+    <button type="submit" name="accion" value="guardar">📘 Guardar Préstamos</button>
+    <button type="button" id="consultarBtn">🔍 Consultar Préstamos</button>
+    <button type="submit" name="accion" value="modificar">✏️ Modificar Préstamos</button>
+    <button type="submit" name="accion" value="eliminar">🗑️ Eliminar Préstamos</button>
+</div>
 
-    </div>
 
 
 </form>
 
 <script>
 $(document).ready(function(){
-    $('button[name="accion"][value="consultar"]').click(function(e){
+    $('#consultarBtn').click(function(e){
         e.preventDefault();  
 
-       
         var prestamos_id = $('#prestamos_id').val();
         var usuarios_id = $('#usuarios_id').val();
         var libros_id = $('#libros_id').val();
@@ -81,9 +80,8 @@ $(document).ready(function(){
             return;
         }
 
-        // Hacer petición AJAX a una ruta para consultar datos
         $.ajax({
-            url: '{{ route("prestamos.consultar") }}', // Ruta para consulta, crea esta en web.php
+            url: '{{ route("prestamos.consultar") }}', 
             method: 'POST',
             data: {
                 prestamos_id: prestamos_id,
@@ -92,14 +90,12 @@ $(document).ready(function(){
                 _token: '{{ csrf_token() }}'
             },
             success: function(response){
-                // Llenar los campos con la respuesta recibida
                 $('#fecha_prestamo').val(response.fecha_prestamo);
                 $('#fecha_devolucion').val(response.fecha_devolucion);
                 $('#estado').val(response.estado);
             },
             error: function(){
                 alert('No se encontró el préstamo con los datos proporcionados.');
-                // Limpiar campos si quieres
                 $('#fecha_prestamo').val('');
                 $('#fecha_devolucion').val('');
                 $('#estado').val('');
@@ -107,6 +103,7 @@ $(document).ready(function(){
         });
     });
 });
+
 </script>
 
 @endsection

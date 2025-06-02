@@ -49,9 +49,9 @@ class PrestamosController extends Controller
         return redirect()->route('prestamos.index')->with('success', 'Préstamo registrado correctamente.');
     }
 
-   public function consultar(Request $request)
+    public function consultar(Request $request)
 {
-    $prestamo = Prestamo::where('prestamos_id', $request->prestamos_id)
+    $prestamo = PrestamosModel::where('prestamos_id', $request->prestamos_id)
         ->where('usuarios_id', $request->usuarios_id)
         ->where('libros_id', $request->libros_id)
         ->first();

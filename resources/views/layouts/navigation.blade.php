@@ -11,8 +11,8 @@
     <nav style="display:flex; align-items:center; justify-content:space-between;">
         <div>
             <a href="{{ url('dashboard') }}">🏠 HOME</a>
-            <a href="{{ url('dashboard') }}">📘 DESCRUBRE</a>
-            <a href="{{ url('registros') }}">📄 REGISTROS</a>
+           <a href="{{ route('categorias') }}">📘 DESCUBRE</a>
+            <a href="{{ route('registros') }}">📄 REGISTROS</a>
             <a href="{{ route('registros') }}">🤝 NOSOTROS</a>
         </div>
 
