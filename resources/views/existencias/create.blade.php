@@ -32,8 +32,16 @@
     <label for="codigo_identificacion">Código de Identificación:</label>
     <input type="text" name="codigo_identificacion" id="codigo_identificacion" required><br><br>
 
-    <label for="libros_id">ID del Libro:</label>
-    <input type="number" name="libros_id" id="libros_id" required><br><br>
+    <label for="libros_id">Libro:</label>
+    <select name="libros_id" id="libros_id" required>
+        <option value="">-- Seleccionar Libro --</option>
+        @foreach($libros as $libro)
+            <option value="{{ $libro->libros_id }}" {{ (isset($prestamo) && $prestamo->libros_id == $libro->libros_id) ? 'selected' : '' }}>
+                {{ $libro->titulo }}
+            </option>
+        @endforeach
+    </select>
+
 
     <label for="ubicacion_general">Ubicación General:</label>
     <input type="text" name="ubicacion_general" id="ubicacion_general" required><br><br>

@@ -19,8 +19,8 @@ class ExistenciasModel extends Model
         'codigo_identificacion',
     ];
 
-    public function libro()
+    public function libros()
     {
-        return $this->belongsTo(LibrosModel::class);
+        return $this->belongsTo(LibrosModel::class,'libros_id', 'libros_id' );
     }
 }

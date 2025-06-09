@@ -11,7 +11,7 @@ class ExistenciasController extends Controller
     
     public function index()
     {
-        $existencias = ExistenciasModel::with('libro')->get(); 
+        $existencias = ExistenciasModel::with('libros')->get(); 
         return view('existencias.index', compact('existencias'));
     }
 
@@ -25,7 +25,7 @@ class ExistenciasController extends Controller
     {
         
         $validated = $request->validate([
-            'libros_id' => 'required|integer',
+            'libros_id' => 'required|exists:libros,libros_id',
             'ubicacion_general' => 'required|string',
             'codigo_identificacion' => 'required|string|unique:existencias,codigo_identificacion',
         ]);
@@ -58,7 +58,7 @@ class ExistenciasController extends Controller
     {
         
         $validated = $request->validate([
-            'libros_id' => 'required|integer',
+            'libros_id' => 'required|exists:libros,libros_id',
             'ubicacion_general' => 'required|string',
             'codigo_identificacion' => 'required|string',
         ]);

@@ -29,7 +29,7 @@
             @foreach($existencias as $existencia)
                 <tr>
                     <td>{{ $existencia->id_existencia }}</td>
-                    <td>{{ $existencia->libros_id }}</td>
+                    <td>{{ $existencia->libros->titulo ?? 'Sin libro' }}</td>
                     <td>{{ $existencia->ubicacion_general }}</td>
                     <td>{{ $existencia->codigo_identificacion }}</td>
 
