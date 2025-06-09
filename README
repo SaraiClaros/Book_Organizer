@@ -1,3 +1,8 @@
 Edith Sarai Claros Sorto - SMSS156623
 Blanca Yulissa Argueta Martinez - SMSS151623
 Ximena Letizia Moreno Diaz - SMSS058623
+
+
+solo es necesario correr 
+php artisan serve  
+y podra ver un apartado para registrarse e iniciar sesion  
