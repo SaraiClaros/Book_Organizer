@@ -3,20 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\HistorialModel;
+use App\Models\UsuariosModel;
 use Illuminate\Http\Request;
 
 class HistorialController extends Controller
 {
     public function index()
     {
-        $historiales = HistorialModel::all(); 
+       $historiales = HistorialModel::with('usuarios')->get(); 
         return view('historial.index', compact('historiales'));
     }
 
     
     public function create()
     {
-        return view('historial.create');
+         $usuarios = UsuariosModel::all();
+        return view('historial.create', compact('usuarios'));
     }
 
   

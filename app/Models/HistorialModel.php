@@ -18,4 +18,12 @@ class HistorialModel extends Model
         'detalle',
         'fecha',
     ];
+
+
+       
+    public function usuarios()
+    {
+        return $this->belongsTo(UsuariosModel::class, 'usuarios_id', 'usuarios_id');
+    }
+
 }

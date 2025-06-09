@@ -30,8 +30,15 @@
     <label for="historial_id">ID del Historial (Solo para consulta):</label>
     <input type="number" id="historial_id" name="historial_id"><br><br>
 
-    <label for="usuarios_id">ID del Usuario:</label>
-    <input type="number" id="usuarios_id" name="usuarios_id" required><br><br>
+    <label for="usuarios_id">Usuario:</label>
+    <select name="usuarios_id" id="usuarios_id" required>
+        <option value="">-- Seleccionar Usuario --</option>
+        @foreach($usuarios as $usuario)
+            <option value="{{ $usuario->usuarios_id }}" {{ (isset($prestamo) && $prestamo->usuarios_id == $usuario->usuarios_id) ? 'selected' : '' }}>
+                {{ $usuario->nombre }}
+            </option>
+        @endforeach
+    </select>
 
     <label for="accion">Acción:</label>
     <input type="text" id="accion" name="accion" required><br><br>

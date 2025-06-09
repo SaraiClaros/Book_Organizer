@@ -26,4 +26,7 @@ class UsuariosModel extends Model
             $usuario->password = bcrypt($usuario->password); 
         });
     }
+
+
+    
 }

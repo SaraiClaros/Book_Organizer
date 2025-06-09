@@ -19,7 +19,7 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Usuario ID</th>
+                <th>Usuarios</th>
                 <th>Acción</th>
                 <th>Detalle</th>
                 <th>Fecha</th>
@@ -30,7 +30,7 @@
             @foreach($historiales as $historial)
                 <tr>
                     <td>{{ $historial->historial_id }}</td>
-                    <td>{{ $historial->usuarios_id }}</td>
+                    <td>{{ $historial->usuarios->nombre ?? 'Sin usuario' }}</td>
                     <td>{{ $historial->accion }}</td>
                     <td>{{ $historial->detalle }}</td>
                     <td>{{ $historial->fecha }}</td>
