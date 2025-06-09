@@ -16,26 +16,26 @@ class PdfController extends Controller
 
     public function subir(Request $request)
     {
-        $request->validate([
+        /*$request->validate([
             'archivo' => 'required|mimes:pdf|max:20480',
             'portada' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'categoria_id' => 'required|exists:categorias,id',
             'descripcion' => 'nullable|string|max:255',
-        ]);
+        ])*/
 
-        // Guardar el PDF y obtener ruta relativa sin "public/"
-        $rutaPdf = $request->file('archivo')->store('public/pdfs');
+     
+        $rutaPdf = $request->file('archivo')->store('storage/pdfs','public');
         $rutaPdf = str_replace('public/', '', $rutaPdf);
         
 
-        // Guardar portada si se subió y obtener ruta relativa
+        
         $rutaPortada = null;
         if ($request->hasFile('portada')) {
-            $rutaPortada = $request->file('portada')->store('public/portadas');
+            $rutaPortada = $request->file('portada')->store('storage/portadas', 'public');
             $rutaPortada = str_replace('public/', '', $rutaPortada);
         }
 
-        // Guardar en la base de datos
+       
         Pdf::create([
             'nombre' => $request->file('archivo')->getClientOriginalName(),
             'ruta' => $rutaPdf,

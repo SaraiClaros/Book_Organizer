@@ -1,4 +1,4 @@
-<h2>Visualización del PDF</h2>
+<h2>Visualización del Libro</h2>
 
 <iframe src="{{ $url }}" width="100%" height="600px" style="border:none;"></iframe>
 
