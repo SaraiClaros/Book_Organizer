@@ -3,7 +3,7 @@
 @section('title', 'Préstamos - Gestión')
 
 @section('content')
-<h1>Registrar Nuevo Préstamo</h1>
+<h1 style="color: #DAF7A6 ;">Registrar Nuevo Préstamo</h1>
 <link rel="stylesheet" href="{{ asset('css/estilos.css') }}">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

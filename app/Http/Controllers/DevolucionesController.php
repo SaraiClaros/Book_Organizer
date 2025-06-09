@@ -8,93 +8,69 @@ use Illuminate\Http\Request;
 
 class DevolucionesController extends Controller
 {
+    
     public function index()
     {
-        $devoluciones = DevolucionesModel::with('prestamos')->get();
+        $devoluciones = DevolucionesModel::with('prestamos')->get(); 
         return view('devoluciones.index', compact('devoluciones'));
     }
 
     public function create()
     {
-        $prestamos = PrestamosModel::all();
+        $prestamos = PrestamosModel::all(); 
         return view('devoluciones.create', compact('prestamos'));
     }
 
+    public function destroy($devoluciones_id)
+    {
+        $devoluciones = DevolucionesModel::findOrFail($devoluciones_id);
+        $devoluciones->delete();
+
+        return redirect()->route('devoluciones.index')->with('success', 'devoluciones eliminada correctamente.');
+    }
+
+   
     public function store(Request $request)
     {
-        $accion = $request->input('accion');
+        $validated = $request->validate([
+            'prestamos_id' => 'required|integer|exists:prestamos,prestamos_id',
+            'fecha_devolucion_real' => 'required|date',
+            'observaciones' => 'nullable|string',
+        ]);
 
-        switch ($accion) {
-            case 'guardar':
-                $request->validate([
-                    'prestamos_id' => 'required|integer|exists:prestamos,id',
-                    'fecha_devolucion_real' => 'required|date',
-                ]);
+        DevolucionesModel::create($validated);
 
-                DevolucionesModel::create([
-                    'prestamos_id' => $request->prestamos_id,
-                    'fecha_devolucion_real' => $request->fecha_devolucion_real,
-                    'observaciones' => $request->observaciones,
-                ]);
-
-                return redirect()->back()->with('success', 'Devolución guardada correctamente');
-                break;
-
-            case 'consultar':
-                $prestamoId = $request->input('prestamos_id');
-                $devolucion = DevolucionesModel::where('prestamos_id', $prestamoId)->first();
-
-                if (!$devolucion) {
-                    return redirect()->back()->withErrors('No se encontró la devolución.');
-                }
-
-                
-                return view('devoluciones.index', ['devoluciones' => collect([$devolucion])]);
-                break;
-
-            case 'modificar':
-                $request->validate([
-                    'prestamos_id' => 'required|integer|exists:prestamos,id',
-                    'fecha_devolucion_real' => 'required|date',
-                ]);
-
-                $devolucion = DevolucionesModel::where('prestamos_id', $request->prestamos_id)->first();
-
-                if (!$devolucion) {
-                    return redirect()->back()->withErrors('No se encontró la devolución para modificar.');
-                }
-
-                $devolucion->fecha_devolucion_real = $request->fecha_devolucion_real;
-                $devolucion->observaciones = $request->observaciones;
-                $devolucion->save();
-
-                return redirect()->back()->with('success', 'Devolución modificada correctamente');
-                break;
-
-            case 'eliminar':
-                $prestamoId = $request->input('prestamos_id');
-                $devolucion = DevolucionesModel::where('prestamos_id', $prestamoId)->first();
-
-                if (!$devolucion) {
-                    return redirect()->back()->withErrors('No se encontró la devolución para eliminar.');
-                }
-
-                $devolucion->delete();
-
-                return redirect()->back()->with('success', 'Devolución eliminada correctamente');
-                break;
-
-            default:
-                return redirect()->back()->withErrors('Acción no válida');
-                break;
-        }
+        return redirect()->route('devoluciones.index')->with('success', 'Devolución registrada correctamente.');
     }
-
-    public function destroy($id)
+ 
+     public function consult(Request $request)
     {
-        $devolucion = DevolucionesModel::findOrFail($id);
-        $devolucion->delete();
+         $devolucion = DevolucionesModel::where('prestamos_id', $request->prestamos_id)
+            ->first();
 
-        return redirect()->route('devoluciones.index')->with('success', 'Devolución eliminada correctamente.');
+           if (!$devolucion) {
+        return response()->json(data: ['error' => 'Devolucion no encontrada']);
     }
+
+    return response()->json([
+        'fecha_devolucion_real' => $devolucion->fecha_devolucion_real,
+        'observaciones' => $devolucion->observaciones,
+    ]);
+}
+   
+    public function update(Request $request, $id)
+    {
+        $devolucion = DevolucionesModel::find($id);
+        $validated = $request->validate([
+            'prestamos_id' => 'required|integer|exists:prestamos,prestamos_id',
+            'fecha_devolucion_real' => 'required|date',
+            'observaciones' => 'nullable|string',
+        ]);
+        $devolucion->update($validated);
+
+        return redirect()->route('devoluciones.index')->with('success', 'Devolución actualizada correctamente.');
+    }
+
+    
+  
 }

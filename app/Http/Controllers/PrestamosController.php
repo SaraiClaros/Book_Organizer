@@ -27,7 +27,7 @@ class PrestamosController extends Controller
         $accion = $request->input('accion');
 
         if ($accion === 'consultar') {
-            return $this->consult($request);
+            return $this->consultar($request);
         } elseif ($accion === 'modificar') {
             return $this->update($request, $request->input('prestamos_id'));
         } elseif ($accion === 'eliminar') {
@@ -40,8 +40,10 @@ class PrestamosController extends Controller
             'usuarios_id' => 'required|exists:usuarios,usuarios_id',
             'libros_id' => 'required|exists:libros,libros_id',
             'fecha_prestamo' => 'required|date',
-            'fecha_devolucion' => 'required|date',
+            'fecha_devolucion' => 'required|date|after_or_equal:fecha_prestamo',
             'estado' => 'required|in:En curso,Devuelto,Atrasado',
+        ], [
+            'fecha_devolucion.after_or_equal' => 'La fecha de devolución no puede ser anterior a la fecha de préstamo.',
         ]);
 
         PrestamosModel::create($request->all());
@@ -50,25 +52,22 @@ class PrestamosController extends Controller
     }
 
     public function consultar(Request $request)
-{
-    $prestamo = PrestamosModel::where('prestamos_id', $request->prestamos_id)
-        ->where('usuarios_id', $request->usuarios_id)
-        ->where('libros_id', $request->libros_id)
-        ->first();
+    {
+        $prestamo = PrestamosModel::where('prestamos_id', $request->prestamos_id)
+            ->where('usuarios_id', $request->usuarios_id)
+            ->where('libros_id', $request->libros_id)
+            ->first();
 
-    if(!$prestamo){
-        return response()->json(['error' => 'Préstamo no encontrado'], 404);
+        if (!$prestamo) {
+            return response()->json(['error' => 'Préstamo no encontrado'], 404);
+        }
+
+        return response()->json([
+            'fecha_prestamo' => $prestamo->fecha_prestamo->format('Y-m-d'),
+            'fecha_devolucion' => $prestamo->fecha_devolucion->format('Y-m-d'),
+            'estado' => $prestamo->estado,
+        ]);
     }
-
-    return response()->json([
-        'fecha_prestamo' => $prestamo->fecha_prestamo->format('Y-m-d'),
-        'fecha_devolucion' => $prestamo->fecha_devolucion->format('Y-m-d'),
-        'estado' => $prestamo->estado,
-    ]);
-}
-
-
-
 
     public function update(Request $request, $id)
     {
@@ -76,8 +75,10 @@ class PrestamosController extends Controller
             'usuarios_id' => 'required|exists:usuarios,usuarios_id',
             'libros_id' => 'required|exists:libros,libros_id',
             'fecha_prestamo' => 'required|date',
-            'fecha_devolucion' => 'required|date',
+            'fecha_devolucion' => 'required|date|after_or_equal:fecha_prestamo',
             'estado' => 'required|in:En curso,Devuelto,Atrasado',
+        ], [
+            'fecha_devolucion.after_or_equal' => 'La fecha de devolución no puede ser anterior a la fecha de préstamo.',
         ]);
 
         $prestamo = PrestamosModel::findOrFail($id);

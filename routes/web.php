@@ -37,6 +37,7 @@ Route::resource('libro', LibroController::class);
 Route::resource('devoluciones', DevolucionesController::class);
 Route::resource('genero', GeneroController::class);
 Route::resource('historial', HistorialController::class);
+Route::post('/historial/consultar', [HistorialController::class, 'consult'])->name('historial.consultar');
 Route::resource('existencias', ExistenciasController::class);
 Route::resource('usuario', UsuariosController::class);
 Route::resource('prestamos', PrestamosController::class);
@@ -61,6 +62,24 @@ Route::post('/subir', [PdfController::class, 'subir'])->name('subir.pdf');
 
 Route::get('/ver/{id}', [PdfController::class, 'ver'])->name('ver.pdf');
 Route::get('/descargar/{id}', [PdfController::class, 'descargar'])->name('descargar.pdf');
+
+
+Route::resource('devoluciones', DevolucionesController::class)->only([
+    'index', 'create', 'store', 'destroy','update'
+]);
+Route::post('/devoluciones/consultar', [DevolucionesController::class, 'consult'])->name('devoluciones.consultar');
+
+
+Route::resource('genero', GeneroController::class)->only([
+    'index', 'create', 'store', 'destroy','update'
+]);
+Route::post('/genero/consultar', [GeneroController::class, 'consult'])->name('genero.consultar');
+
+Route::resource('existencias', ExistenciasController::class) ->only([
+    'index', 'create', 'store', 'destroy','update'
+]);
+Route::post('/existencias/consultar', [ExistenciasController::class, 'consult'])->name('existencia.consultar');
+
 
 
 require __DIR__.'/auth.php';

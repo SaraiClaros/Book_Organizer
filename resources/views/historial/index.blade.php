@@ -29,8 +29,8 @@
         <tbody>
             @foreach($historiales as $historial)
                 <tr>
-                    <td>{{ $historial->id }}</td>
-                    <td>{{ $historial->usuario_id }}</td>
+                    <td>{{ $historial->historial_id }}</td>
+                    <td>{{ $historial->usuarios_id }}</td>
                     <td>{{ $historial->accion }}</td>
                     <td>{{ $historial->detalle }}</td>
                     <td>{{ $historial->fecha }}</td>

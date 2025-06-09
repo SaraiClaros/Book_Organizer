@@ -29,7 +29,7 @@
         <tbody>
             @foreach($generos as $genero)
                 <tr>
-                    <td>{{ $genero->id }}</td>
+                    <td>{{ $genero->genero_id }}</td>
                     <td>{{ $genero->genero }}</td>
                     <td>{{ $genero->descripcion }}</td>
 

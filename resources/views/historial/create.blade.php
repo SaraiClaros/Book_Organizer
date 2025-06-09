@@ -24,41 +24,81 @@
         </div>
     @endif
 
-    <form action="{{ route('historial.store') }}" method="POST">
-        @csrf
+    <form id="historialForm" action="{{ route('historial.store') }}" method="POST">
+    @csrf
 
-        <div class="form-group">
-        <label for="usuarios_id">ID del Usuario:</label>
-        <input type="number" class="borde-negro"  name="usuarios_id" required><br><br>
-         </div>
+    <label for="historial_id">ID del Historial (Solo para consulta):</label>
+    <input type="number" id="historial_id" name="historial_id"><br><br>
 
-        <div class="form-group">
-        <label for="accion">Acción:</label>
-        <input type="text" class="borde-negro"  name="accion" required><br><br>
-         </div>
+    <label for="usuarios_id">ID del Usuario:</label>
+    <input type="number" id="usuarios_id" name="usuarios_id" required><br><br>
 
-        <div class="form-group">
-        <label for="detalle">Detalle:</label><br>
-        <textarea name="detalle"  class="borde-negro" rows="4" cols="50"></textarea><br><br>
-         </div>
+    <label for="accion">Acción:</label>
+    <input type="text" id="accion" name="accion" required><br><br>
 
-        <div class="form-group">
-        <label for="fecha">Fecha:</label>
-        <input type="datetime-local "  class="borde-negro" name="fecha" required><br><br>
-        </div>
+    <label for="detalle">Detalle:</label><br>
+    <textarea id="detalle" name="detalle" rows="4" cols="50"></textarea><br><br>
 
-        <div class="butones">
-            <button type="submit" name="accion" value="guardar">📘 Guardar Historial</button>
-            <button type="submit" name="accion" value="consultar">🔍 Consultar Historia</button>
-            <button type="submit" name="accion" value="modificar">✏️ Modificar Historial</button>
-            <button type="submit" name="accion" value="eliminar">🗑️ Eliminar Historial</button>
-        
-        </div>
-       
-    </form>
+    <label for="fecha">Fecha:</label>
+    <input type="datetime-local" id="fecha" name="fecha" required><br><br>
 
-    <br>
-    <a href="{{ route('historial.index') }}" class="enlace-volver">🔙 Ver historial</a>
+    <div class="botones">
+        <button type="submit">📘 Guardar historial</button>
+        <button type="button" id="consultar">🔍 Consultar historial</button>
+        <button type="button" id="modificar">✏️ Modifica historialr</button>
+    </div>
+</form>
+
+<br>
+<a href="{{ route('historial.index') }}" class="enlace-volver">🔙 Ver historial</a>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#consultar').on('click', function() {
+            var historial_id = $('#historial_id').val();
+
+            $.ajax({
+                url: '{{ route('historial.consultar') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    historial_id: historial_id,
+                },
+                success: function(response) {
+                    if (response.error) {
+                        alert(response.error);
+                    } else {
+                        $('#usuarios_id').val(response.usuarios_id);
+                        $('#accion').val(response.accion);
+                        $('#detalle').val(response.detalle);
+                        let fechaOriginal = response.fecha;
+                        let fechaFormateada = new Date(fechaOriginal).toISOString().slice(0,16);
+                        $('#fecha').val(fechaFormateada);
+
+                    }
+                },
+                error: function() {
+                    alert('Ocurrió un error al consultar el historial.');
+                }
+            });
+        });
+    });
+
+    $('#modificar').on('click', function() {
+        let historialId = $('#historial_id').val();
+
+        if (!historialId) {
+            alert('Ingresa un ID de historial para modificar.');
+            return;
+        }
+
+        let form = $('#historialForm');
+        form.attr('action', '/historial/' + historialId);
+        form.append('@method("PUT")');
+        form.submit();
+    });
+</script>
 </body>
 </html>
 @endsection

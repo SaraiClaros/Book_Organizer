@@ -80,4 +80,3 @@ class GeneroController extends Controller
         return redirect()->route('genero.index')->with('success', 'Género eliminado correctamente.');
     }
 }
-

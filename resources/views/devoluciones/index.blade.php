@@ -30,7 +30,7 @@
             <tbody>
                 @foreach ($devoluciones as $devolucion)
                     <tr>
-                        <td>{{ $devolucion->prestamo_id }}</td>
+                        <td>{{ $devolucion->prestamos_id }}</td>
                         <td>{{ $devolucion->fecha_devolucion_real }}</td>
                         <td>{{ $devolucion->observaciones }}</td>
                         <td>
