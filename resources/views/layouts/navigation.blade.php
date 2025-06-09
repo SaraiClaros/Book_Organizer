@@ -13,7 +13,7 @@
             <a href="{{ url('dashboard') }}">🏠 HOME</a>
            <a href="{{ route('categorias') }}">📘 DESCUBRE</a>
             <a href="{{ route('registros') }}">📄 REGISTROS</a>
-            <a href="{{ route('registros') }}">🤝 NOSOTROS</a>
+            <a href="{{ route('nosotros') }}">🤝 NOSOTROS</a>
         </div>
 
         @auth
